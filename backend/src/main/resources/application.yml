@@ -1,0 +1,54 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: quality-trace
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:app_db}
+    username: ${DB_USER:app_user}
+    password: ${DB_PASSWORD:app_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:local-dev-secret-please-change-in-prod-0123456789}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    header: Authorization
+    prefix: "Bearer "
+  rate-limit:
+    max-requests: ${RATE_LIMIT_MAX:120}
+    window-ms: ${RATE_LIMIT_WINDOW_MS:60000}
+  release:
+    # Only final inspections with these result statuses can release a batch
+    releasable-results: PASS
+    # Defects with these severities block release until disposed
+    blocking-severities: MAJOR,CRITICAL
