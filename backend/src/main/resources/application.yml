@@ -1,0 +1,19 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: quality-trace
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:app_db}
+    username: ${DB_USER:app_user}
+    password: ${DB_PASSWORD:app_password}
+    hikari:
+      # 数据库暂不可用时不阻断启动（当前仓储为内存实现，连接留待 MyBatis-Plus 接入）
+      initialization-fail-timeout: -1
+  sql:
+    init:
+      mode: never
+
+jwt:
+  secret: ${JWT_SECRET:local-dev-secret}

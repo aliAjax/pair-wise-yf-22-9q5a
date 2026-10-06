@@ -58,3 +58,27 @@ CREATE TABLE IF NOT EXISTS audit_log (
   target_id TEXT,
   created_at TEXT
 );
+
+-- 放行结论：按批次缓存的放行链计算结果，不良记录一变即作废重算
+CREATE TABLE IF NOT EXISTS batch_release (
+  id INTEGER PRIMARY KEY,
+  batch_no TEXT,
+  work_order_id TEXT,
+  status TEXT,
+  reason TEXT,
+  cycle INTEGER,
+  stale TEXT,
+  computed_at TEXT
+);
+
+-- 放行提交：同一批次同一周期内先到生效（APPLIED），晚到留待复核（PENDING_RECHECK）
+CREATE TABLE IF NOT EXISTS release_submission (
+  id INTEGER PRIMARY KEY,
+  batch_no TEXT,
+  cycle INTEGER,
+  actor_id TEXT,
+  role TEXT,
+  outcome TEXT,
+  note TEXT,
+  submitted_at TEXT
+);
